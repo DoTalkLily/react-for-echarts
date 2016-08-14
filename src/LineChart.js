@@ -18,19 +18,15 @@ const BarChart = React.createClass({
         title: React.PropTypes.string,
         subTitle: React.PropTypes.string,
         style: React.PropTypes.object,
-        series: React.PropTypes.array,
         category: React.PropTypes.array,
+        series: React.PropTypes.array,
         opacity: React.PropTypes.number,
         className: React.PropTypes.string,
         theme: React.PropTypes.string,
-        enableStack: React.PropTypes.bool,    //是否允许堆叠
-        enableHorizon: React.PropTypes.bool,  //是否变成水平柱状图
-        enableBrush: React.PropTypes.bool,    //圈选
         showLoading: React.PropTypes.bool,    //是否展示loading动画
         onChartReady: React.PropTypes.func,
         onEvents: React.PropTypes.object,
-        onSelect: React.PropTypes.func,
-        onBrushSelect: React.PropTypes.func
+        onSelect: React.PropTypes.func
     },
 
     getInitialState(){
@@ -42,24 +38,13 @@ const BarChart = React.createClass({
             });
         }
 
-        let category =  {
-            type : 'category',
-            data : this.props.category || [],
-            axisTick: {
-                alignWithLabel: true
-            }
-        };
 
         let option = {
             title : {
-                text: this.props.title || '',
-                subtext: this.props.subtitle || '',
-                x:'center'
+                text: this.props.title || ''
             },
             legend:{
-                data: legend || [],
-                align: 'left',
-                left: 10
+                data: legend || []
             },
             tooltip : {
                 trigger: 'axis',
@@ -74,38 +59,19 @@ const BarChart = React.createClass({
                 containLabel: true
             },
             xAxis : [
-                this.props.enableHorizon ? { type : 'value' } : category
+                {
+                    type : 'category',
+                    boundaryGap : false,
+                    data : this.props.category ||[]
+                }
             ],
             yAxis : [
-                this.props.enableHorizon ? category : { type : 'value' }
+                {
+                    type : 'value'
+                }
             ],
             series : this.props.series || []
         };
-
-        //enable brush in toolbox
-        if(this.props.enableBrush){
-            option.brush = {
-                toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
-                throttleType: 'debounce',
-                throttleDelay: 300,
-                brushMode: 'multiple',
-                inBrush:{
-                    opacity:1
-                },
-                outBrush:{
-                    opacity:0.4
-                }
-            };
-        }
-        if(this.props.enableStack){
-            option.toolbox={
-                feature: {
-                    magicType: {
-                        type: ['stack', 'tiled']
-                    }
-                }
-            };
-        }
 
         return {
             option : option
@@ -203,9 +169,5 @@ const BarChart = React.createClass({
         (typeof this.props.onSelect === 'function') && this.props.onSelect(param,chart);
     },
 
-    //brush select
-    onBrushSelect(param,chart){
-        (typeof this.props.onBrushSelect === 'function') && this.props.onBrushSelect(param.batch[0].selected,chart);
-    }
 });
 module.exports = BarChart;
