@@ -1,10 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import SimpleChartComponent from './SimpleChartComponent.jsx';
+import PieChart from './PieChartTest.jsx';
+import BarChart from './BarChartTest.jsx';
+
 require('./demo.css');
 
 ReactDOM.render((
-        <SimpleChartComponent/>
+       <div>
+           <PieChart/>
+           <BarChart/>
+       </div>
     ),
     document.getElementById('wrapper')
 );

@@ -1,5 +1,6 @@
 import React from 'react';
 import PieChart from '../src/PieChart';
+import echarts from 'echarts';
 
 const SimpleChartComponent = React.createClass({
     propTypes: {
@@ -7,8 +8,8 @@ const SimpleChartComponent = React.createClass({
     getOtion: function() {
         const option = {
             title : {
-                // text: '某站点用户访问来源',
-                // subtext: '纯属虚构',
+                text: 'lingyi test',
+                subtext: 'fake',
                 x:'center'
             },
             tooltip : {
@@ -18,7 +19,7 @@ const SimpleChartComponent = React.createClass({
             legend: {
                 orient: 'vertical',
                 left: 'left',
-                data: ['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
+                data: ['lala','hehe','haha','kk','cc']
             },
             series : [
                 {
@@ -26,13 +27,13 @@ const SimpleChartComponent = React.createClass({
                     type: 'pie',
                     radius : ['40%','55%'],
                     center: ['50%', '60%'],
-                    data:[ 334,222,333,444,555],
-                    //     {value:335, name:'直接访问'},
-                    //     {value:310, name:'邮件营销'},
-                    //     {value:234, name:'联盟广告'},
-                    //     {value:135, name:'视频广告'},
-                    //     {value:1548, name:'搜索引擎'}
-                    // ],
+                    data:[
+                        {value:335, name:'lala'},
+                        {value:310, name:'hehe'},
+                        {value:234, name:'haha'},
+                        {value:135, name:'kk'},
+                        {value:1548, name:'cc'}
+                    ],
                     itemStyle: {
                         emphasis: {
                             shadowBlur: 10,
@@ -63,12 +64,15 @@ const SimpleChartComponent = React.createClass({
         alert('chart legendselectchanged');
     },
     onPieSelectChanged: function(param,echart){
+        console.log('select!');
         console.log(param,echart.getOption());
     },
     onPieUnselected: function(param,echart){
+        console.log('unselect!');
         console.log(param,echart);
     },
     onBrushSelected: function(param,echart){
+        console.log('brush selected!');
         console.log(param,echart);
     },
 
@@ -79,11 +83,18 @@ const SimpleChartComponent = React.createClass({
         chart.hideLoading();
 
     },
+    registerTheme: function() {
+        echarts.registerTheme('my_theme', {
+            backgroundColor: '#f4cccc'
+        });
+    },
     render: function() {
+        // this.registerTheme();
+
         let onEvents = {
             'click': this.onChartClick,
             'legendselectchanged': this.onChartLegendselectchanged,
-            'pieselectchanged': this.onPieSelectChanged,
+            // 'pieselectchanged': this.onPieSelectChanged,
             'pieunselected': this.onPieUnselected,
             'brushSelected': this.onBrushSelected
         };
@@ -91,10 +102,24 @@ const SimpleChartComponent = React.createClass({
             <div>
                 <PieChart
                     option={ this.getOtion() }
-                    style={{ height: '350px', width: '50%' }}
+                    title="this is a pie chart"
+                    subTitle="i am a subtitle"
+                    style={{ height: '500px', width: '60%' }}
                     className='pie_chart'
-                    theme='test'
+                    opacity={1}
+                    enableRing={false}
+                    enableBrush={true}
+                    data={
+                        [
+                            {value:335, name:'jona'},
+                            {value:310, name:'why'},
+                            {value:234, name:'you donnot'},
+                            {value:135, name:'like'},
+                            {value:1548, name:'me'}
+                        ]
+                    }
                     onChartReady={this.onChartReady}
+                    onSelect={this.onPieSelectChanged}
                     onEvents={onEvents}
                 />
             </div>

@@ -8,7 +8,7 @@
     "lint": "eslint src",
     "clean": "rimraf lib",
     "test": "npm run lint",
-    "build": "webpack",
+    "build": "npm run clean && cross-env NODE_ENV=production babel src -d lib",
     "prepublish": "npm run build"
   },
   "repository": {
@@ -54,7 +54,7 @@
     "jsx-loader": "~0.13.2",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
-    "rimraf": "^2.5.0",
+    "rimraf": "^2.5.4",
     "style-loader": "~0.12.3",
     "webpack": "^1.12.9",
     "webpack-dev-server": "^1.10.1"

@@ -11,7 +11,7 @@ const selectedItemStyle = {
     }
 };
 
-const PieChart = React.createClass({
+const BarChart = React.createClass({
     propTypes: {
         // option: React.PropTypes.object.isRequired,
         option: React.PropTypes.object,
@@ -22,8 +22,6 @@ const PieChart = React.createClass({
         opacity: React.PropTypes.number,
         className: React.PropTypes.string,
         theme: React.PropTypes.string,
-        enableBrush: React.PropTypes.bool,    //是否展示圈选控件
-        enableRing: React.PropTypes.bool,     //变成圆环 设置bool或者内半径(<=0 && <=1)
         showLoading: React.PropTypes.bool,    //是否展示loading动画
         hoverAnimation: React.PropTypes.bool, //是否hover动画
         onChartReady: React.PropTypes.func,
@@ -32,15 +30,6 @@ const PieChart = React.createClass({
     },
 
     getInitialState(){
-        let data = this.props.data;
-        let legend;
-        if(data && data.length){
-            legend = [];
-            data.forEach(function(value,index){
-                typeof value.name === 'string' && legend.push(value.name);
-            });
-        }
-
         let option = {
             title : {
                 text: this.props.title || '测试',
@@ -48,62 +37,40 @@ const PieChart = React.createClass({
                 x:'center'
             },
             tooltip : {
-                trigger: 'item',
-                formatter: "{a} <br/>{b} : {c} ({d}%)"
-            },
-            legend: {
-                orient: 'vertical',
-                left: 'left',
-                data: legend || ['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
-            },
-            brush: {
-                throttleType: 'debounce',
-                throttleDelay: 300,
-                brushMode: 'multiple',
-                inBrush:{
-                    opacity:1
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
                 }
             },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis : [
+                {
+                    type : 'category',
+                    data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    axisTick: {
+                        alignWithLabel: true
+                    }
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
             series : [
                 {
-                    type: 'pie',
-                    radius: this.props.enableRing ? ['50%', '70%'] : '50%',
-                    center: ['50%', '50%'],
-                    data:this.props.data || [
-                        {value:335, name:'直接访问'},
-                        {value:310, name:'邮件营销'},
-                        {value:234, name:'联盟广告'},
-                        {value:135, name:'视频广告'},
-                        {value:1548, name:'搜索引擎'}
-                    ],
-                    itemStyle: {
-                        normal: {
-                            opacity: this.props.opacity || 1,
-                        },
-                        emphasis: {
-                            shadowBlur: 10,
-                            shadowOffsetX: 0,
-                            shadowColor: 'rgba(0, 0, 0, 0.8)',
-                            opacity:1
-                        }
-                    },
-                    selectedMode:'multiple',
-                    selectedOffset: 0,
-                    hoverAnimation: !!this.props.hoverAnimation
+                    name:'直接访问',
+                    type:'bar',
+                    barWidth: '60%',
+                    data:[10, 52, 200, 334, 390, 330, 220]
                 }
             ]
         };
-        //enable brush in toolbox
-        if(this.props.enableBrush){
-            option.brush = {
-                throttleType: 'debounce',
-                throttleDelay: 300,
-                brushMode: 'multiple',
-                inBrush:{
-                    opacity:1
-                }
-            };
-        }
 
         return {
             option : option
@@ -139,11 +106,6 @@ const PieChart = React.createClass({
             echartObj.resize();
         });
 
-        //on select
-        echartObj.on('pieselectchanged',function(param){
-            self.onSelect(param,echartObj);
-        });
-
     },
 
     // update
@@ -170,7 +132,7 @@ const PieChart = React.createClass({
 
     getEchartsInstance() {
         // return the echart object
-        return echarts.getInstanceByDom(this.refs.echartsDom) || echarts.init(this.refs.echartsDom, this.props.theme|| macarons);
+        return echarts.getInstanceByDom(this.refs.echartsDom) || echarts.init(this.refs.echartsDom, this.props.theme || macarons);
     },
 
     render() {
@@ -202,4 +164,4 @@ const PieChart = React.createClass({
         (typeof this.props.onSelect === 'function') && this.props.onSelect(param,chart);
     }
 });
-module.exports = PieChart;
+module.exports = BarChart;
