@@ -18,23 +18,49 @@ const BarChart = React.createClass({
         title: React.PropTypes.string,
         subTitle: React.PropTypes.string,
         style: React.PropTypes.object,
-        data: React.PropTypes.array,
+        series: React.PropTypes.array,
+        category: React.PropTypes.array,
         opacity: React.PropTypes.number,
         className: React.PropTypes.string,
         theme: React.PropTypes.string,
+        enableStack: React.PropTypes.bool,    //是否允许堆叠
+        enableHorizon: React.PropTypes.bool,  //是否变成水平柱状图
+        enableBrush: React.PropTypes.bool,    //圈选
         showLoading: React.PropTypes.bool,    //是否展示loading动画
         hoverAnimation: React.PropTypes.bool, //是否hover动画
         onChartReady: React.PropTypes.func,
         onEvents: React.PropTypes.object,
-        onSelect: React.PropTypes.func
+        onSelect: React.PropTypes.func,
+        onBrushSelect: React.PropTypes.func
     },
 
     getInitialState(){
+        let legend;
+        if(this.props.series){
+            legend = [];
+            this.props.series.forEach(function(value,index){
+               legend.push(value.name);
+            });
+        }
+
+        let category =  {
+            type : 'category',
+            data : this.props.category || [],
+            axisTick: {
+                alignWithLabel: true
+            }
+        };
+
         let option = {
             title : {
-                text: this.props.title || '测试',
-                subtext: this.props.subtitle || '纯属虚构',
+                text: this.props.title || '',
+                subtext: this.props.subtitle || '',
                 x:'center'
+            },
+            legend:{
+                data: legend || [],
+                align: 'left',
+                left: 10
             },
             tooltip : {
                 trigger: 'axis',
@@ -49,28 +75,38 @@ const BarChart = React.createClass({
                 containLabel: true
             },
             xAxis : [
-                {
-                    type : 'category',
-                    data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                    axisTick: {
-                        alignWithLabel: true
-                    }
-                }
+                this.props.enableHorizon ? { type : 'value' } : category
             ],
             yAxis : [
-                {
-                    type : 'value'
-                }
+                this.props.enableHorizon ? category : { type : 'value' }
             ],
-            series : [
-                {
-                    name:'直接访问',
-                    type:'bar',
-                    barWidth: '60%',
-                    data:[10, 52, 200, 334, 390, 330, 220]
-                }
-            ]
+            series : this.props.series || []
         };
+
+        //enable brush in toolbox
+        if(this.props.enableBrush){
+            option.brush = {
+                toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+                throttleType: 'debounce',
+                throttleDelay: 300,
+                brushMode: 'multiple',
+                inBrush:{
+                    opacity:1
+                },
+                outBrush:{
+                    opacity:0.4
+                }
+            };
+        }
+        if(this.props.enableStack){
+            option.toolbox={
+                feature: {
+                    magicType: {
+                        type: ['stack', 'tiled']
+                    }
+                }
+            };
+        }
 
         return {
             option : option
@@ -106,6 +142,10 @@ const BarChart = React.createClass({
             echartObj.resize();
         });
 
+        //on brush select
+        echartObj.on('brushselected',function(param){
+            self.onBrushSelect(param,echartObj);
+        });
     },
 
     // update
@@ -162,6 +202,11 @@ const BarChart = React.createClass({
         chart.setOption(option);
 
         (typeof this.props.onSelect === 'function') && this.props.onSelect(param,chart);
+    },
+
+    //brush select
+    onBrushSelect(param,chart){
+        (typeof this.props.onBrushSelect === 'function') && this.props.onBrushSelect(param.batch[0].selected,chart);
     }
 });
 module.exports = BarChart;

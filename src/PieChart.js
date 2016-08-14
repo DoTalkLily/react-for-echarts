@@ -13,12 +13,13 @@ const selectedItemStyle = {
 
 const PieChart = React.createClass({
     propTypes: {
-        // option: React.PropTypes.object.isRequired,
         option: React.PropTypes.object,
         title: React.PropTypes.string,
         subTitle: React.PropTypes.string,
         style: React.PropTypes.object,
         data: React.PropTypes.array,
+        legend: React.PropTypes.array,
+        series: React.PropTypes.array,
         opacity: React.PropTypes.number,
         className: React.PropTypes.string,
         theme: React.PropTypes.string,
@@ -33,49 +34,19 @@ const PieChart = React.createClass({
 
     getInitialState(){
         let data = this.props.data;
-        let legend;
-        if(data && data.length){
-            legend = [];
+        let legend,singlePieConfig;
+        //single pie chart or just use series
+        if(!this.props.series && data && data.length === 1){
             data.forEach(function(value,index){
                 typeof value.name === 'string' && legend.push(value.name);
             });
-        }
 
-        let option = {
-            title : {
-                text: this.props.title || '测试',
-                subtext: this.props.subtitle || '纯属虚构',
-                x:'center'
-            },
-            tooltip : {
-                trigger: 'item',
-                formatter: "{a} <br/>{b} : {c} ({d}%)"
-            },
-            legend: {
-                orient: 'vertical',
-                left: 'left',
-                data: legend || ['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
-            },
-            brush: {
-                throttleType: 'debounce',
-                throttleDelay: 300,
-                brushMode: 'multiple',
-                inBrush:{
-                    opacity:1
-                }
-            },
-            series : [
+            singlePieConfig = [
                 {
                     type: 'pie',
                     radius: this.props.enableRing ? ['50%', '70%'] : '50%',
                     center: ['50%', '50%'],
-                    data:this.props.data || [
-                        {value:335, name:'直接访问'},
-                        {value:310, name:'邮件营销'},
-                        {value:234, name:'联盟广告'},
-                        {value:135, name:'视频广告'},
-                        {value:1548, name:'搜索引擎'}
-                    ],
+                    data:this.props.data || [],
                     itemStyle: {
                         normal: {
                             opacity: this.props.opacity || 1,
@@ -91,7 +62,34 @@ const PieChart = React.createClass({
                     selectedOffset: 0,
                     hoverAnimation: !!this.props.hoverAnimation
                 }
-            ]
+            ];
+        }
+
+
+        let option = {
+            title : {
+                text: this.props.title || '',
+                subtext: this.props.subtitle || '',
+                x:'center'
+            },
+            tooltip : {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: this.props.legend || legend || []
+            },
+            brush: {
+                throttleType: 'debounce',
+                throttleDelay: 300,
+                brushMode: 'multiple',
+                inBrush:{
+                    opacity:1
+                }
+            },
+            series : this.props.series || singlePieConfig
         };
         //enable brush in toolbox
         if(this.props.enableBrush){

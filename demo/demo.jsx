@@ -7,7 +7,6 @@ require('./demo.css');
 
 ReactDOM.render((
        <div>
-           <PieChart/>
            <BarChart/>
        </div>
     ),

@@ -7,7 +7,7 @@ const BarChartComponent = React.createClass({
     },
     getOtion: function() {
         const option = {
-            color: ['#3398DB'],
+            // color: ['#3398DB'],
             tooltip : {
                 trigger: 'axis',
                 axisPointer : {            // 坐标轴指示器，坐标轴触发有效
@@ -46,26 +46,17 @@ const BarChartComponent = React.createClass({
 
         return option;
     },
-    onChartClick: function(param, echart) {
-        // console.log(param, echart);
-    },
-    onChartLegendselectchanged: function(param, echart) {
+
+    onChartLegendSelectChanged: function(param, echart) {
         console.log(param, echart);
         alert('chart legendselectchanged');
     },
-    onPieSelectChanged: function(param,echart){
-        console.log('select!');
-        console.log(param,echart.getOption());
-    },
-    onPieUnselected: function(param,echart){
-        console.log('unselect!');
-        console.log(param,echart);
-    },
     onBrushSelected: function(param,echart){
         console.log('brush selected!');
-        console.log(param,echart);
     },
+    onSelect: function(param,echart){
 
+    },
     onChartReady: function(chart) {
         // setTimeout(function() {
         //     chart.hideLoading();
@@ -82,32 +73,66 @@ const BarChartComponent = React.createClass({
         // this.registerTheme();
 
         let onEvents = {
-            'click': this.onChartClick,
-            'legendselectchanged': this.onChartLegendselectchanged,
-            // 'pieselectchanged': this.onPieSelectChanged,
-            'pieunselected': this.onPieUnselected,
-            'brushSelected': this.onBrushSelected
+            'legendselectchanged': this.onChartLegendSelectChanged
         };
+
+        let category = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+        let series = [
+            {
+                name:'直接访问',
+                type:'bar',
+                // barWidth: '60%',
+                data:[10, 52, 200, 334, 390, 330, 220],
+                label: {
+                    normal: {
+                        show: true,
+                        position:'right'
+                    }
+                }
+            },
+            {
+                name:'间接访问',
+                type:'bar',
+                // barWidth: '60%',
+                data:[10, 52, 200, 334, 390, 330, 220],
+                label: {
+                    normal: {
+                        show: true,
+                        position:'right'
+                    }
+                }
+            },
+            {
+                name:'e',
+                type:'bar',
+                // barWidth: '60%',
+                data:[10, 52, 200, 334, 390, 330, 220],
+                label: {
+                    normal: {
+                        show: true,
+                        position:'right'
+                    }
+                }
+            }
+        ];
         return (
             <div>
                 <BarChart
-                    option={ this.getOtion() }
-                    title="this is a pie chart"
+                    title="this is a bar chart"
                     subTitle="i am a subtitle"
                     style={{ height: '500px', width: '60%' }}
-                    className='pie_chart'
+                    className='bar_chart'
                     opacity={1}
-                    data={
-                        [
-                            {value:335, name:'jona'},
-                            {value:310, name:'why'},
-                            {value:234, name:'you donnot'},
-                            {value:135, name:'like'},
-                            {value:1548, name:'me'}
-                        ]
-                    }
+                    theme="default"
+                    category={category}
+                    series={series}  //至少要有name、type、data
+                    enableBrush={true}
+                    enableStack={true}
+                    enableHorizon={true}
                     onChartReady={this.onChartReady}
-                    onSelect={this.onPieSelectChanged}
+                    onSelect={this.onSelect}
+                    onBrushSelect={this.onBrushSelected}
                     onEvents={onEvents}
                 />
             </div>
