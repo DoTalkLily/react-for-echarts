@@ -23,7 +23,6 @@ const PieChart = React.createClass({
         opacity: React.PropTypes.number,
         className: React.PropTypes.string,
         theme: React.PropTypes.string,
-        enableBrush: React.PropTypes.bool,    //是否展示圈选控件
         enableRing: React.PropTypes.bool,     //变成圆环 设置bool或者内半径(<=0 && <=1)
         showLoading: React.PropTypes.bool,    //是否展示loading动画
         hoverAnimation: React.PropTypes.bool, //是否hover动画
@@ -36,7 +35,9 @@ const PieChart = React.createClass({
         let data = this.props.data;
         let legend,singlePieConfig;
         //single pie chart or just use series
-        if(!this.props.series && data && data.length === 1){
+        if(!this.props.series && data){
+            legend = [];
+
             data.forEach(function(value,index){
                 typeof value.name === 'string' && legend.push(value.name);
             });
@@ -81,27 +82,10 @@ const PieChart = React.createClass({
                 left: 'left',
                 data: this.props.legend || legend || []
             },
-            brush: {
-                throttleType: 'debounce',
-                throttleDelay: 300,
-                brushMode: 'multiple',
-                inBrush:{
-                    opacity:1
-                }
-            },
+
             series : this.props.series || singlePieConfig
         };
-        //enable brush in toolbox
-        if(this.props.enableBrush){
-            option.brush = {
-                throttleType: 'debounce',
-                throttleDelay: 300,
-                brushMode: 'multiple',
-                inBrush:{
-                    opacity:1
-                }
-            };
-        }
+
 
         return {
             option : option

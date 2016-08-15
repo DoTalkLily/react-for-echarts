@@ -43,54 +43,6 @@ const SimpleChartComponent = React.createClass({
                         {value:679, name:'营销广告'},
                         {value:1548, name:'搜索引擎'}
                     ]
-                },
-                {
-                    name:'访问来源eww',
-                    type:'pie',
-                    radius: ['40%', '55%'],
-
-                    data:[
-                        {value:335, name:'直达'},
-                        {value:310, name:'邮件营销'},
-                        {value:234, name:'联盟广告'},
-                        {value:135, name:'视频广告'},
-                        {value:1048, name:'百度'},
-                        {value:251, name:'谷歌'},
-                        {value:147, name:'必应'},
-                        {value:102, name:'其他'}
-                    ]
-                },
-                {
-                    name:'访问来源eww',
-                    type:'pie',
-                    radius: ['65%', '80%'],
-
-                    data:[
-                        {value:335, name:'直达'},
-                        {value:310, name:'邮件营销'},
-                        {value:234, name:'联盟广告'},
-                        {value:135, name:'视频广告'},
-                        {value:1048, name:'百度'},
-                        {value:251, name:'谷歌'},
-                        {value:147, name:'必应'},
-                        {value:102, name:'其他'}
-                    ]
-                },
-                {
-                    name:'访问来源eww',
-                    type:'pie',
-                    radius: ['85%', '100%'],
-
-                    data:[
-                        {value:335, name:'直达'},
-                        {value:310, name:'邮件营销'},
-                        {value:234, name:'联盟广告'},
-                        {value:135, name:'视频广告'},
-                        {value:1048, name:'百度'},
-                        {value:251, name:'谷歌'},
-                        {value:147, name:'必应'},
-                        {value:102, name:'其他'}
-                    ]
                 }
             ],
             brush: {
@@ -143,28 +95,27 @@ const SimpleChartComponent = React.createClass({
             'pieunselected': this.onPieUnselected,
             'brushSelected': this.onBrushSelected
         };
-        // data={
-        //     [
-        //         {value:335, name:'he'},
-        //         {value:310, name:'ha'},
-        //         {value:234, name:'xi'},
-        //         {value:135, name:'hei'},
-        //         {value:1548, name:'wa'}
-        //     ]
-        // };
         return (
             <div>
                 <PieChart
-                    option={ this.getOtion() }
                     title="this is a pie chart"
                     subTitle="i am a subtitle"
                     style={{ height: '500px', width: '60%' }}
                     className='pie_chart'
-                    opacity={1}
+                    opacity={0.5}
                     enableRing={false}
                     //enableBrush={true}
-                    //data={data}
+                    data={
+                        [
+                            {value:335, name:'he'},
+                            {value:310, name:'ha'},
+                            {value:234, name:'xi'},
+                            {value:135, name:'hei'},
+                            {value:1548, name:'wa'}
+                        ]
+                    }
                     //series={}
+                    hoverAnimation={false}
                     onChartReady={this.onChartReady}
                     onSelect={this.onPieSelectChanged}
                     onEvents={onEvents}

@@ -8,7 +8,7 @@ require('./demo.css');
 
 ReactDOM.render((
        <div>
-           <LineChart/>
+           <BarChart/>
        </div>
     ),
     document.getElementById('wrapper')

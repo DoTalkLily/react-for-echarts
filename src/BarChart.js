@@ -13,7 +13,6 @@ const selectedItemStyle = {
 
 const BarChart = React.createClass({
     propTypes: {
-        // option: React.PropTypes.object.isRequired,
         option: React.PropTypes.object,
         title: React.PropTypes.string,
         subTitle: React.PropTypes.string,
@@ -35,10 +34,23 @@ const BarChart = React.createClass({
 
     getInitialState(){
         let legend;
+        let itemStyle =  {
+            normal: {
+                opacity: this.props.opacity || 1,
+            },
+            emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.8)',
+                opacity:1
+            }
+        };
+
         if(this.props.series){
             legend = [];
             this.props.series.forEach(function(value,index){
                legend.push(value.name);
+               value.itemStyle = itemStyle;
             });
         }
 
@@ -108,7 +120,8 @@ const BarChart = React.createClass({
         }
 
         return {
-            option : option
+            option : option,
+            selectedIndex : {}
         };
     },
 
@@ -144,6 +157,10 @@ const BarChart = React.createClass({
         //on brush select
         echartObj.on('brushselected',function(param){
             self.onBrushSelect(param,echartObj);
+        });
+        //on select
+        echartObj.on('click',function(param){
+             self.onSelect(param,echartObj);
         });
     },
 
@@ -184,23 +201,42 @@ const BarChart = React.createClass({
         );
     },
 
-    //events
     onSelect(param,chart){
-        let selectedIndex = -1;
-        let option = chart.getOption();
+        console.log(param);
+        let self =  this;
+        let selectedSeriesIndex = param.seriesIndex;
+        let selectedDataIndex = param.dataIndex;
 
-        option.series[0].data.forEach(function(obj,index){
-            (obj.name === param.name) && (selectedIndex = index);
+        //if selected , the reset style and make state unselected
+        let option = chart.getOption();
+        let series = option.series;
+
+        let unselectItemStyle = {
+            normal:{
+                opacity: self.props.opacity || 1,
+                borderWidth: 1
+            }
+        };
+
+        let newStyle = self.state.selectedIndex[selectedSeriesIndex] ? unselectItemStyle: selectedItemStyle;
+
+        series.forEach(function(value,index){
+           let selectedData =  value.data[selectedDataIndex];
+           if(typeof selectedData === 'object'){
+               selectedData.itemStyle = newStyle;
+           }else{
+               value.data[selectedDataIndex] = {
+                   name: value.name,
+                   value: selectedData,
+                   itemStyle: newStyle
+               };
+           }
         });
 
-        if( selectedIndex >= 0 ){
-            param.selected[param.name] ? (option.series[0].data[selectedIndex].itemStyle = selectedItemStyle)  // if selected
-                : (delete option.series[0].data[selectedIndex].itemStyle);            // if unselected
-        }
+        self.state.selectedIndex[selectedSeriesIndex] =  ! self.state.selectedIndex[selectedSeriesIndex];
 
         chart.setOption(option);
-
-        (typeof this.props.onSelect === 'function') && this.props.onSelect(param,chart);
+        (typeof self.props.onSelect === 'function') && self.props.onSelect(param,chart);
     },
 
     //brush select
