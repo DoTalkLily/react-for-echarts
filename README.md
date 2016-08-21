@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # echarts-for-react
 
 A very simple echarts(v3.0) wrapper for react.
@@ -136,3 +137,7 @@ you can use the API to do:
 # 5. LICENSE
 
 MIT
+=======
+# react-for-echats
+echarts in react components
+>>>>>>> 60c87dc60a35f1b0e42b8ce4454505d23b77938d
