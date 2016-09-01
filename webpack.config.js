@@ -18,12 +18,12 @@ module.exports = {
      {
          test: /\.jsx?$/,
          exclude: /node_modules/,
-         loader: 'react-hot!babel'
+         loader: 'babel'
     }, {
-      test: /\.css$/, 
-      loader: 'style-loader!css-loader' 
-    }, { 
-      test: /\.(png|jpg)$/, 
+      test: /\.css$/,
+      loader: 'style-loader!css-loader'
+    }, {
+      test: /\.(png|jpg)$/,
       loader: 'url-loader?limit=512'
     }]
   },
